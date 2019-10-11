@@ -21,14 +21,14 @@
 
                 // float2 uv1: TEXCORD1;
                 // float4 colors: COLOR;
-                float4 tangents: TANGENT;
+                //float4 tangents: TANGENT;
             };
 
             struct VertexOutput{
                 float4 vertex : SV_POSITION;
                 float2 uv0 : TEXCOORD0;
                 float3 normal: NORMAL;
-                float4 tangents: TANGENT;
+                //float4 tangents: TANGENT;
             };
 
             //sampler2D _MainTex;
@@ -38,7 +38,7 @@
                 VertexOutput o;
                 o.uv0 = v.uv0;
                 o.normal = v.normal;
-                o.tangents = v.tangents;
+                //o.tangents = v.tangents;
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 return o;
             }
@@ -46,9 +46,10 @@
             fixed4 frag (VertexOutput i) : SV_Target{
                 float2 uv = i.uv0;
                 // normals range from -1 to 1, we want 0 to 1,
-                float3 normals = i.normal * 0.5 + 0.5; 
+                //float3 normals = i.normal * 0.5+0.5; 
+                float3 normals = i.normal; 
                 //float3 tangents = i.tangents;
-                return float4(tangents, 0);
+                return float4(normals, 0);
             }
             ENDCG
         }
