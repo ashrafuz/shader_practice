@@ -47,9 +47,17 @@
                 float2 uv = i.uv0;
                 // normals range from -1 to 1, we want 0 to 1,
                 //float3 normals = i.normal * 0.5+0.5; 
-                float3 normals = i.normal; 
-                //float3 tangents = i.tangents;
-                return float4(normals, 0);
+                //float3 normals = i.normal;
+                //return float4(normals, 0);
+                
+                //working with lights
+                
+                float3 lightDir = normalize(float3(1,1,1));
+                float intensity = dot(lightDir, i.normal);
+                float3 color = i.normal * intensity + 0.5;
+
+                return float4(color, 0);
+                
             }
             ENDCG
         }
