@@ -51,12 +51,23 @@
                 //return float4(normals, 0);
                 
                 //working with lights
-                
-                float3 lightDir = normalize(float3(1,1,1));
-                float intensity = dot(lightDir, i.normal);
-                float3 color = i.normal * intensity + 0.5;
+                // float3 lightDir = normalize(float3(1,1,1));
+                // float intensity = dot(lightDir, i.normal);
+                // float3 color = i.normal * intensity + 0.5;
 
-                return float4(color, 0);
+                // //v2
+                // float3 lightDir = normalize(float3(1,1,1));
+                // float intensity = dot(lightDir, i.normal);
+                // float3 lightColor = float3(1, 0.8, 0.78);
+// //v3
+                float3 lightDir = normalize(float3(1,1,1));
+                //saturate :WORST NAME: actually clamp 0-1
+                float intensity = saturate(dot(lightDir, i.normal));
+                float3 lightColor = float3(1, 0.8, 0.78);
+                float3 diffuseLight = lightColor * intensity;
+                float3 ambientLight = float3(0.2, 0.2, 0.5);
+
+                return float4(ambientLight + diffuseLight, 0);
                 
             }
             ENDCG
