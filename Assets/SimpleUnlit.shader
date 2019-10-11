@@ -12,6 +12,8 @@
             #pragma fragment frag
 
             #include "UnityCG.cginc"
+            #include "Lighting.cginc"
+            #include "AutoLight.cginc"
 
             //Mesh data, vertext position, vertex normal, uvs, tangents, vertex colors
             struct VertexInput {
@@ -59,11 +61,23 @@
                 // float3 lightDir = normalize(float3(1,1,1));
                 // float intensity = dot(lightDir, i.normal);
                 // float3 lightColor = float3(1, 0.8, 0.78);
-// //v3
-                float3 lightDir = normalize(float3(1,1,1));
+                
+                // //v3
+                // float3 lightDir = normalize(float3(1,1,1));
+                // //saturate :WORST NAME: actually clamp 0-1
+                // float intensity = saturate(dot(lightDir, i.normal));
+                // float3 lightColor = float3(1, 0.8, 0.78);
+                // float3 diffuseLight = lightColor * intensity;
+                // float3 ambientLight = float3(0.2, 0.2, 0.5);
+
+                //v4
+                //float3 lightDir = normalize(float3(1,1,1));
+                float3 lightDir = _WorldSpaceLightPos0;
+                float3 lightColor = _LightColor0.rgb;
+
                 //saturate :WORST NAME: actually clamp 0-1
                 float intensity = saturate(dot(lightDir, i.normal));
-                float3 lightColor = float3(1, 0.8, 0.78);
+                
                 float3 diffuseLight = lightColor * intensity;
                 float3 ambientLight = float3(0.2, 0.2, 0.5);
 
