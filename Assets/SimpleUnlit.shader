@@ -67,6 +67,7 @@
                 float dist = distance(_MousePos, i.worldPos);
                 return 1-dist;
 
+
                 float2 uv = i.uv0;
                 float3 normal = normalize(i.normal); //interpolated
 
