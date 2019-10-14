@@ -40,6 +40,7 @@
             //float4 _MainTex_ST;
             float4 _Color;
             float _Gloss;
+            uniform float3 _MousePos;
 
             VertexOutput vert (VertexInput v){
                 VertexOutput o;
@@ -50,41 +51,40 @@
                 return o;
             }
 
+            float InvLerp(float a, float b, float val){
+                return (val - a) / (b-a);
+            }
+
+            float3 MyLerp (float3 a, float3 b, float t){
+                return t*b + (1-t)*a;
+            }
+
+            float Posterize(float steps, float value){
+                return floor(steps*value) / steps;
+            }
+
             fixed4 frag (VertexOutput i) : SV_Target{
+                float dist = distance(_MousePos, i.worldPos);
+                return 1-dist;
+
                 float2 uv = i.uv0;
-                //return float4(i.worldPos, 1);
+                float3 normal = normalize(i.normal); //interpolated
 
-                //return  _Color;
+                float3 c1 = float3(0.1, 0.8, 0.4);
+                float3 c2 = float3(0.9, 0.1,0.2);
+                float t = uv.y;
 
-                // normals range from -1 to 1, we want 0 to 1,
-                //float3 normals = i.normal * 0.5+0.5; 
-                //float3 normals = i.normal;
-                //return float4(normals, 0);
-                
-                //working with lights
-                // float3 lightDir = normalize(float3(1,1,1));
-                // float intensity = dot(lightDir, i.normal);
-                // float3 color = i.normal * intensity + 0.5;
-
-                // //v2
-                // float3 lightDir = normalize(float3(1,1,1));
-                // float intensity = dot(lightDir, i.normal);
-                // float3 lightColor = float3(1, 0.8, 0.78);
-                
-                // //v3
-                // float3 lightDir = normalize(float3(1,1,1));
-                // //saturate :WORST NAME: actually clamp 0-1
-                // float intensity = saturate(dot(lightDir, i.normal));
-                // float3 lightColor = float3(1, 0.8, 0.78);
-                // float3 diffuseLight = lightColor * intensity;
-                // float3 ambientLight = float3(0.2, 0.2, 0.5);
+                float3 blend = MyLerp(c1, c2, uv.y); // uv.y => 0 to 1
+                //float3 blend = InvLerp(0.25, 0.75, uv.y);
+                //return float4(blend, 0);
+                //return Posterize( 10, uv.y); // STEPPING
 
                 //v4
                 //Direct light
                 float3 lightDir = _WorldSpaceLightPos0;
                 float3 lightColor = _LightColor0.rgb;
                 //clamping 0 - 1
-                float intensity = max(0, dot(lightDir, i.normal));
+                float intensity = max(0, dot(lightDir, normal));
                 float3 diffuseLight = lightColor * intensity;
 
                 //Ambient Light
@@ -94,27 +94,25 @@
                 float3 cameraPos = _WorldSpaceCameraPos;
                 float3 fragToCamera = cameraPos - i.worldPos;
                 float3 viewDirection = normalize(fragToCamera);
-
                 //return float4(viewDirection, 1);
-
                 //Phong 
-                float3 viewReflection = reflect( -viewDirection, i.normal);
+                float3 viewReflection = reflect( -viewDirection, normal );
                 //return float4(viewReflection, 1);
-
                 float specularFalloff = max(0,dot(viewReflection, lightDir)) ;
-
+                specularFalloff = Posterize(10, specularFalloff);
+                
                 //modify with gloss (how shiny do you want the object to be)
                 specularFalloff = pow(specularFalloff, _Gloss);
 
-                return float4(specularFalloff.xxx, 1);
-
-                //Blinn-Phong 
+                float3 directSpecular = specularFalloff * lightColor;
+                // return float4(directSpecular, 1);
 
                 //Composite Light
                 float3 totalDiffuseLights = ambientLight + diffuseLight;
+                float3 finalSurfaceColor = totalDiffuseLights * _Color.rgb + directSpecular;
                 // float3 ;
 
-                return float4(totalDiffuseLights * _Color.rgb, 0);
+                return float4(finalSurfaceColor, 0);
                 
             }
             ENDCG
