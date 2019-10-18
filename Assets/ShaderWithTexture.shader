@@ -1,6 +1,8 @@
 ﻿Shader "Unlit/SimpleUnlit2"{
     Properties{
         _Color("Color", Color) = (1,1,1,1)
+        _DeepColor("Deep color", Color) = (1,1,1,1)
+        _WaveColor("Wave color", Color) = (1,1,1,1)
         _Gloss ("Gloss", Float) = 1
         _IslandTex ("Texture", 2D) = "black" {}
     }
@@ -40,6 +42,8 @@
             //float4 _MainTex_ST;
             float4 _Color;
             float _Gloss;
+            float4 _DeepColor;
+            float4 _WaveColor;
             uniform float3 _MousePos;
 
             VertexOutput vert (VertexInput v){
@@ -73,7 +77,10 @@
                 float waveAmp = (sin(shape / waveSize + _Time.y) + 1) * 0.5;
                 float waveValues = waveAmp * _island;
 
-                return waveValues;
+                float3 waterColor = lerp(_DeepColor,_Color, _island );
+                float3 waterWithWaves = lerp(waterColor, _WaveColor, waveValues);
+
+                return float4(waterWithWaves,0);
 
 
                 float dist = distance(_MousePos, i.worldPos);
