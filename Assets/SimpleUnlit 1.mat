@@ -27,3 +27,5 @@ Material:
     - _Gloss: 4
     m_Colors:
     - _Color: {r: 1, g: 0, b: 0.009994984, a: 1}
+    - _DeepColor: {r: 0.581389, g: 0.6132076, b: 0.15908688, a: 1}
+    - _WaveColor: {r: 1, g: 1, b: 1, a: 1}

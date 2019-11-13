@@ -26,4 +26,6 @@ Material:
     m_Floats:
     - _Gloss: 1
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.8584906, g: 0.84825605, b: 0, a: 1}
+    - _DeepColor: {r: 0, g: 0.13530879, b: 0.4056604, a: 1}
+    - _WaveColor: {r: 0, g: 0.4371167, b: 0.5283019, a: 1}
